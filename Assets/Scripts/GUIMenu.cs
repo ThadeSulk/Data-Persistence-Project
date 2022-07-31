@@ -8,6 +8,8 @@ using UnityEditor;
 
 public class GUIMenu : MonoBehaviour
 {
+    public GameObject leaderboardPanel;
+    private Leaderboard leaderboard;
 
     public void StartGame()
     {
@@ -24,5 +26,22 @@ public class GUIMenu : MonoBehaviour
     public void ReturnMenu()
     {
         SceneManager.LoadScene(0);
+    }
+    public void LeaderboardToggle()
+    {
+        if (leaderboardPanel.activeSelf)
+        {
+            leaderboardPanel.SetActive(false);
+        }
+        else
+        {
+            leaderboardPanel.SetActive(true); 
+            leaderboard = leaderboardPanel.GetComponent<Leaderboard>();
+            leaderboard.LoadLeaderboard();            
+        }
+    }
+    private void LoadLeaderboard()
+    {
+
     }
 }

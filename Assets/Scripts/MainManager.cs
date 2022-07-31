@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class MainManager : MonoBehaviour
 {
@@ -13,20 +14,22 @@ public class MainManager : MonoBehaviour
     public Text ScoreText;
     public Text bestScoreText;
     public GameObject GameOverText;
-    
+    public GameObject inputPanel;
+    public TMP_InputField inputField;
+
     private bool m_Started = false;
     private int m_Points;
-    
-    private bool m_GameOver = false;
 
-    
+    private bool m_GameOver = false;
+    //private bool newHighScore = false;
+
     // Start is called before the first frame update
     void Start()
     {
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
-        
-        int[] pointCountArray = new [] {1,1,2,2,5,5};
+
+        int[] pointCountArray = new[] { 1, 1, 2, 2, 5, 5 };
         for (int i = 0; i < LineCount; ++i)
         {
             for (int x = 0; x < perLine; ++x)
@@ -57,10 +60,17 @@ public class MainManager : MonoBehaviour
         }
         else if (m_GameOver)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) && !inputPanel.activeSelf)
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
+            if (Input.GetKeyDown(KeyCode.Return) && inputPanel.activeSelf)
+            {
+                string name = inputField.text;
+                inputPanel.SetActive(false);
+                MenuManager.AddToLeaderboard(new MenuManager.LeaderboardEntry { userName = name, score = m_Points });
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                }
         }
     }
 
@@ -74,9 +84,25 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+
+        if (MenuManager.leaderboardEntries.Count > 0)
+        {
+            if (m_Points > MenuManager.leaderboardEntries[MenuManager.leaderboardEntries.Count - 1].score || MenuManager.leaderboardEntries.Count != 5)
+            {
+                inputPanel.SetActive(true);
+            }
+
+        }
+        else 
+        {
+            inputPanel.SetActive(true);
+        }
     }
     public void SetBestScore()
     {
-        bestScoreText.text = "Best Score: " + MenuManager.leaderboardEntries[0].score + " by: " + MenuManager.leaderboardEntries[0].userName;
+        if (MenuManager.leaderboardEntries.Count > 0)
+        {
+            bestScoreText.text = "Best Score: " + MenuManager.leaderboardEntries[0].score + " by: " + MenuManager.leaderboardEntries[0].userName;
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+//No Longer Used, all code consolidated with the GUIMenu.cs
 public class Leaderboard : MonoBehaviour
 {
     private Transform scoreContainer;
